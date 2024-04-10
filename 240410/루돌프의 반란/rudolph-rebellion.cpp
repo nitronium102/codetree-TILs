@@ -42,8 +42,8 @@ int calcDist(ci coord1, ci coord2) {
 }
 
 void debugPrintBoard() {
-	for (int i=1; i<=n; i++){
-		for (int j=1; j<=n; j++){
+	for (int i = 1; i <= n; i++) {
+		for (int j = 1; j <= n; j++) {
 			cout << board[i][j] << ' ';
 		}
 		cout << "\n";
@@ -53,22 +53,22 @@ void debugPrintBoard() {
 
 void debugPrintScore() {
 	cout << "현재 산타 점수 현황\n";
-	for (int i=1; i<santas.size(); i++) {
+	for (int i = 1; i < santas.size(); i++) {
 		cout << santas[i].idx << " : " << santas[i].score << '\n';
 	}
 }
 
-bool santaCmp(Santa s1, Santa s2){
+bool santaCmp(Santa s1, Santa s2) {
 	return s1.idx < s2.idx;
 }
 
 bool cmp(pi s1, pi s2) {
 	// 1) 거리가 적은 순
-	if (s1.first.first != s2.first.first){
+	if (s1.first.first != s2.first.first) {
 		return s1.first.first < s2.first.first;
 	}
 	// 2) x좌표가 큰 순
-	if (s1.second.first != s2.second.first){
+	if (s1.second.first != s2.second.first) {
 		return s1.second.first > s2.second.first;
 	}
 	// 3) y좌표가 큰 순
@@ -79,7 +79,7 @@ int getRDir(ci roudolf, int x, int y) {
 	int dir = -1;
 
 	int dist = calcDist(roudolf, {x, y});
-	for (int i=0; i<8; i++){
+	for (int i = 0; i < 8; i++) {
 		int nx = roudolf.first + dx[i];
 		int ny = roudolf.second + dy[i];
 
@@ -120,12 +120,13 @@ void moveRoudolf(int cur_turn) {
 	vector<pi> santaDists; // dist, santa idx, santa x, santa y
 
 	// 1) 가장 가까운 산타 찾기
-	for (Santa santa : santas) {
+	for (Santa santa: santas) {
 		// 산타가 탈락한 경우 패스
 		if (santa.is_out) continue;
 		int curDist = calcDist(roudolf, {santa.x, santa.y});
 
-		santaDists.push_back({{curDist, santa.idx}, {santa.x, santa.y}});
+		santaDists.push_back({{curDist, santa.idx},
+							  {santa.x, santa.y}});
 	}
 	sort(santaDists.begin(), santaDists.end(), cmp);
 
@@ -149,14 +150,14 @@ void moveRoudolf(int cur_turn) {
 		santas[idx].turn = cur_turn + 1;
 
 		// 해당 산타 루돌프 방향으로 +c칸
-		int nx = roudolf.first + dx[rdir]*c;
-		int ny = roudolf.second + dy[rdir]*c;
+		int nx = roudolf.first + dx[rdir] * c;
+		int ny = roudolf.second + dy[rdir] * c;
 
 		// -- 만약 게임판 밖이면 탈락
-		if (!isRange({nx, ny})){
+		if (!isRange({nx, ny})) {
 			santas[idx].is_out = true;
 		}
-		// -- 다른 산타 있으면 상호작용
+			// -- 다른 산타 있으면 상호작용
 		else {
 			pushSanta(idx, nx, ny, rdir);
 		}
@@ -167,14 +168,14 @@ int findSDir(Santa santa) {
 	int dir = -1;
 	int dist = calcDist(roudolf, {santa.x, santa.y});
 
-	for (int i=0; i<4; i++) {
+	for (int i = 0; i < 4; i++) {
 		int nx = santa.x + dx[i];
 		int ny = santa.y + dy[i];
 
 		if (!isRange({nx, ny}) || board[nx][ny] > 0) continue;
 		int curDist = calcDist(roudolf, {nx, ny});
 
-		if (curDist < dist){
+		if (curDist < dist) {
 			dist = curDist;
 			dir = i;
 		}
@@ -187,7 +188,7 @@ int reverseDir(int dir) {
 }
 
 void moveSanta(int cur_turn) {
-	for (int i=1; i<santas.size(); i++) {
+	for (int i = 1; i < santas.size(); i++) {
 		Santa santa = santas[i];
 		if (santa.is_out || santa.turn >= cur_turn) continue;
 
@@ -217,7 +218,7 @@ void moveSanta(int cur_turn) {
 			if (!isRange({nx, ny})) {
 				santas[i].is_out = true;
 			}
-			// --산타 있으면 상호작용
+				// --산타 있으면 상호작용
 			else {
 				pushSanta(santa.idx, nx, ny, ndir);
 			}
@@ -234,7 +235,8 @@ int main() {
 	// 초기화
 	Santa isanta;
 	isanta.idx = -1;
-	isanta.x = -1; isanta.y = -1;
+	isanta.x = -1;
+	isanta.y = -1;
 	santas.push_back(isanta);
 
 	// 입력
@@ -243,7 +245,7 @@ int main() {
 	board[roudolf.first][roudolf.second] = -1;
 
 	int idx, sr, sc;
-	for (int i=1; i<=p; i++) {
+	for (int i = 1; i <= p; i++) {
 		cin >> idx >> sr >> sc;
 		Santa santa;
 		santa.idx = idx;
@@ -260,7 +262,7 @@ int main() {
 //		cout << santa.idx << " " << santa.x << " " << santa.y << "\n";
 //	}
 	// 연산
-	for(int turn = 1; turn <=m; turn++){
+	for (int turn = 1; turn <= m; turn++) {
 //		cout << "$$$=================== 현재 턴 : " << turn << "\n";
 
 //		cout << "루돌프 이동 함수 시작\n";
@@ -274,7 +276,7 @@ int main() {
 //		debugPrintBoard();
 
 		// 턴 종료 후 살아남은 산타들 점수 증가
-		for (int i=1; i<santas.size(); i++){
+		for (int i = 1; i < santas.size(); i++) {
 			if (santas[i].is_out) continue;
 			santas[i].score++;
 		}
@@ -282,7 +284,7 @@ int main() {
 	}
 
 	// 출력
-	for (int i=1; i<santas.size(); i++) {
+	for (int i = 1; i < santas.size(); i++) {
 		cout << santas[i].score << ' ';
 	}
 }
