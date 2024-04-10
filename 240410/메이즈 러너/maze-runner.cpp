@@ -61,7 +61,7 @@ int moveParticipants() {
 
 			// 범위 바깥이거나 벽인 경우
 			if (nx < 1 || ny < 1 || nx > n || ny > n) continue;
-			if (board[nx][ny]) continue;
+			if (board[nx][ny] > 0) continue;
 
 			// 출구인 경우
 			if (nx == exit_coord.first && ny == exit_coord.second) {
@@ -79,7 +79,7 @@ int moveParticipants() {
 			}
 		}
 	}
-//	debugPrintPeople();
+	debugPrintPeople();
 	return sum;
 }
 
@@ -101,13 +101,13 @@ void findMinimumSquare() {
 		next_board[people[i].first][people[i].second] = 1;
 	}
 
-//	cout << "next_board 출력\n";
-//	for (int i = 1; i <= n; i++) {
-//		for (int j = 1; j <= n; j++) {
-//			cout << next_board[i][j] << ' ';
-//		}
-//		cout << "\n\n";
-//	}
+	cout << "next_board 출력\n";
+	for (int i = 1; i <= n; i++) {
+		for (int j = 1; j <= n; j++) {
+			cout << next_board[i][j] << ' ';
+		}
+		cout << "\n\n";
+	}
 
 	// 사이즈별로 만들기
 	while ((++ssize) < n) {
@@ -138,46 +138,112 @@ void findMinimumSquare() {
 	return;
 }
 
-void rotateSquare() {
-	initTmpBoard();
-
-//	cout << "최소 정사각형 " << sr << " " << sc << " | 사이즈 : " << ssize << "\n";
-//	cout << "보드 회전 before\n";
-//	debugPrintBoard();
-
-	// 내구도 옮기기
-	for (int i = 0; i < ssize; i++) {
-		for (int j = 0; j <= ssize; j++) {
-			next_board[i][j] = board[sr + ssize - j - 1][sc + i];
-		}
-	}
-
-//	cout << "내구도 옮긴 next_board\n";
-//	for (int i=1; i<=n; i++){
-//		for (int j=1; j<=n; j++){
-//			cout << next_board[i][j] << ' ';
+//void rotateSquare() {
+//	initTmpBoard();
+//
+////	cout << "최소 정사각형 " << sr << " " << sc << " | 사이즈 : " << ssize << "\n";
+////	cout << "보드 회전 before\n";
+////	debugPrintBoard();
+//
+//	// 내구도 회전
+//	for (int i = 0; i < ssize; i++) {
+//		for (int j = 0; j < ssize; j++) {
+////			next_board[sr + i][sr + j] = board[sr + ssize - j - 1][sc + i];
+//			next_board[sc+j][sr+ssize-i-1] = board[sr+i][sc+j];
 //		}
-//		cout << "\n";
 //	}
+//
+////	cout << "내구도 옮긴 next_board\n";
+////	for (int i=1; i<=n; i++){
+////		for (int j=1; j<=n; j++){
+////			cout << next_board[i][j] << ' ';
+////		}
+////		cout << "\n";
+////	}
+//
+//	// 내구도 감소
+//	for (int i = 0; i < ssize; i++) {
+//		for (int j = 0; j < ssize; j++) {
+//			int nx = sr + i;
+//			int ny = sc + j;
+//			board[nx][ny] = next_board[i][j] > 0 ? next_board[i][j] - 1 : 0;
+//		}
+//	}
+//
+//	// 사람들 위치와 exit 위치 변경
+//	for (int i = 1; i <= m; i++) {
+//		if (is_out[i]) continue;
+//		int x = people[i].first;
+//		int y = people[i].second;
+//		if (sr <= x && x < sr + ssize && sc <= y && y < sc + ssize) {
+////			int nx = sc + (ssize - (y - sc) - 1);
+////			int ny = sr + (x - sr);
+////			people[i] = {nx, ny};
+//			// Step 1. (sx, sy)를 (0, 0)으로 옮겨주는 변환을 진행합니다.
+//			int ox = x - sr, oy = y - sc;
+//			// Step 2. 변환된 상태에서는 회전 이후의 좌표가 (x, y) -> (y, square_n - x - 1)가 됩니다.
+//			int rx = oy, ry = ssize - ox - 1;
+//			// Step 3. 다시 (sx, sy)를 더해줍니다.
+//			people[i] = make_pair(rx + sr, ry + sc);
+//		}
+//	}
+//
+//	if (sr <= exit_coord.first && exit_coord.first < sr + ssize && sc <= exit_coord.second &&
+//		exit_coord.second < sc + ssize) {
+//		int x = exit_coord.first;
+//		int y = exit_coord.second;
+//		int ox = x - sr, oy = y - sc;
+//		// Step 2. 변환된 상태에서는 회전 이후의 좌표가 (x, y) -> (y, square_n - x - 1)가 됩니다.
+//		int rx = oy, ry = ssize - ox - 1;
+//		// Step 3. 다시 (sx, sy)를 더해줍니다.
+//		exit_coord = make_pair(rx + sr, ry + sc);
+////		exit_coord = {sc + exit_coord.second, sr + ssize - exit_coord.first - 1};
+//	}
+//
+////	debugPrintBoard();
+//
+////	debugPrintPeople();
+////
+////	cout << "exit 위치\n";
+////	cout << exit_coord.first << " " << exit_coord.second << "\n";
+//}
 
-	// 내구도 감소
-	for (int i = 0; i < ssize; i++) {
-		for (int j = 0; j < ssize; j++) {
-			int nx = sr + i;
-			int ny = sc + j;
-			board[nx][ny] = next_board[i][j] > 0 ? next_board[i][j] - 1 : 0;
+
+void rotateSquare() {
+		cout << "최소 정사각형 " << sr << " " << sc << " | 사이즈 : " << ssize << "\n";
+	cout << "보드 회전 before\n";
+	debugPrintBoard();
+	// 우선 정사각형 안에 있는 벽들을 1 감소시킵니다.
+	for (int x = sr; x < sr + ssize; x++)
+		for (int y = sc; y < sc + ssize; y++) {
+			if (board[x][y]) board[x][y]--;
+		}
+
+	// 정사각형을 시계방향으로 90' 회전합니다.
+	for (int x = sr; x < sr + ssize; x++)
+		for (int y = sc; y < sc + ssize; y++) {
+			// Step 1. (sx, sy)를 (0, 0)으로 옮겨주는 변환을 진행합니다.
+			int ox = x - sr, oy = y - sc;
+			// Step 2. 변환된 상태에서는 회전 이후의 좌표가 (x, y) -> (y, square_n - x - 1)가 됩니다.
+			int rx = oy, ry = ssize - ox - 1;
+			// Step 3. 다시 (sx, sy)를 더해줍니다.
+			next_board[rx + sr][ry + sc] = board[x][y];
+		}
+
+	// next_board 값을 현재 board에 옮겨줍니다.
+	for (int x = sr; x < sr + ssize; x++) {
+		for (int y = sc; y < sc + ssize; y++) {
+			board[x][y] = next_board[x][y];
 		}
 	}
 
-	// 사람들 위치와 exit 위치 변경
+	cout << "회전한 board after\n";
+	debugPrintBoard();
 	for (int i = 1; i <= m; i++) {
-		if (is_out[i]) continue;
 		int x = people[i].first;
 		int y = people[i].second;
+		// 해당 참가자가 정사각형 안에 포함되어 있을 때에만 회전시킵니다.
 		if (sr <= x && x < sr + ssize && sc <= y && y < sc + ssize) {
-//			int nx = sc + (ssize - (y - sc) - 1);
-//			int ny = sr + (x - sr);
-//			people[i] = {nx, ny};
 			// Step 1. (sx, sy)를 (0, 0)으로 옮겨주는 변환을 진행합니다.
 			int ox = x - sr, oy = y - sc;
 			// Step 2. 변환된 상태에서는 회전 이후의 좌표가 (x, y) -> (y, square_n - x - 1)가 됩니다.
@@ -187,24 +253,21 @@ void rotateSquare() {
 		}
 	}
 
-	if (sr <= exit_coord.first && exit_coord.first < sr + ssize && sc <= exit_coord.second &&
-		exit_coord.second < sc + ssize) {
-		int x = exit_coord.first;
-		int y = exit_coord.second;
+	// 출구에도 회전을 진행합니다.
+	int x = exit_coord.first;
+	int y = exit_coord.second;
+	if (sr <= x && x < sr + ssize && sc <= y && y < sc + ssize) {
+		// Step 1. (sx, sy)를 (0, 0)으로 옮겨주는 변환을 진행합니다.
 		int ox = x - sr, oy = y - sc;
 		// Step 2. 변환된 상태에서는 회전 이후의 좌표가 (x, y) -> (y, square_n - x - 1)가 됩니다.
 		int rx = oy, ry = ssize - ox - 1;
 		// Step 3. 다시 (sx, sy)를 더해줍니다.
 		exit_coord = make_pair(rx + sr, ry + sc);
-//		exit_coord = {sc + exit_coord.second, sr + ssize - exit_coord.first - 1};
 	}
 
-//	debugPrintBoard();
-
-//	debugPrintPeople();
-//
-//	cout << "exit 위치\n";
-//	cout << exit_coord.first << " " << exit_coord.second << "\n";
+	debugPrintBoard();
+	debugPrintPeople();
+	cout << "회전 후 exit : " << exit_coord.first << ' ' << exit_coord.second << "\n";
 }
 
 void rotateBoard() {
@@ -230,14 +293,14 @@ int main() {
 
 	// 연산
 	for (int i = 1; i <= k; i++) {
-//		cout << "============" << i << "초 이동 시작\n";
+		cout << "============" << i << "초 이동 시작\n";
 		int num = moveParticipants();
 		answer += num;
 		// 모든 참가자가 탈출했는지 확인
 		if (checkAllOut()) {
 			break;
 		}
-//		cout << num << "만큼 이동거리 추가\n";
+		cout << num << "만큼 이동거리 추가\n";
 		rotateBoard();
 	}
 
